@@ -73,8 +73,8 @@ public class DeviceController {
             @ApiResponse(responseCode="422", description="Some business rule was violated"),
             @ApiResponse(responseCode="500", description="Server problems detected"),
     })
-    public void deleteDevice(@PathVariable(value = "id") Long id) {
-        deviceService.deleteDevice(id);
+    public ResponseEntity deleteDevice(@PathVariable(value = "id") Long id) {
+        return deviceService.deleteDevice(id);
     }
 
 }

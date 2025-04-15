@@ -44,7 +44,7 @@ public class DeviceService {
 
     public ResponseEntity updateDevice(Long id, Device device){
         Device existingDevice = deviceRepository.findById(id).orElse(null);
-        if(existingDevice != null && existingDevice.getState().equalsIgnoreCase("in use")){
+        if(existingDevice != null && existingDevice.getState().equalsIgnoreCase("in use") && (device.getName() != null || device.getBrand() != null)){
             return ResponseEntity.status(422).body("The device is in use, is not possible to update");
         } else if (existingDevice == null){
             return ResponseEntity.notFound().build();
@@ -53,7 +53,7 @@ public class DeviceService {
             existingDevice.setBrand(device.getBrand() != null ? device.getBrand() : existingDevice.getBrand());
             existingDevice.setState(device.getState() != existingDevice.getState() ? device.getState() : existingDevice.getState());
             deviceRepository.save(existingDevice);
-            return ResponseEntity.status(201).build();
+            return ResponseEntity.ok().build();
         }
     }
 
