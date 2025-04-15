@@ -1,6 +1,7 @@
 package br.com.acme.challenge.entity;
 
 import br.com.acme.challenge.commons.State;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,10 +16,12 @@ public class Device {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
     private String name;
     private String brand;
     private State state;
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime creation_time;
 
     public Long getId() {
