@@ -1,6 +1,5 @@
 package br.com.acme.challenge.entity;
 
-import br.com.acme.challenge.commons.State;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +19,7 @@ public class Device {
     private Long id;
     private String name;
     private String brand;
-    private State state;
+    private String state;
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime creation_time;
 
@@ -48,12 +47,12 @@ public class Device {
         this.brand = brand;
     }
 
-    public State getState() {
+    public String getState() {
         return state;
     }
 
     public void setState(String state) {
-        this.state = State.valueOf(state);
+        this.state = state;
     }
 
     public LocalDateTime getCreation_time() {

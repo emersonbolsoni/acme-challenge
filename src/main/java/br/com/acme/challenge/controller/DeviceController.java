@@ -7,11 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/v1/devices", produces = {"application/json"})
@@ -28,8 +26,8 @@ public class DeviceController {
             @ApiResponse(responseCode="400", description="Bad Request, please send correct information"),
             @ApiResponse(responseCode="500", description="Server problems detected"),
     })
-    public List<Device> getAllDevices(){
-        return deviceService.getAllDevices();
+    public ResponseEntity getAllDevices(@RequestParam(value = "brand", required = false) String brand, @RequestParam(value = "state", required = false) String state){
+        return deviceService.getAllDevices(brand, state);
     }
 
     @GetMapping(value = "/{id}")
@@ -39,7 +37,7 @@ public class DeviceController {
             @ApiResponse(responseCode="400", description="Bad Request, please send correct information"),
             @ApiResponse(responseCode="500", description="Server problems detected"),
     })
-    public Device getDeviceById(@PathVariable Long id){
+    public ResponseEntity getDeviceById(@PathVariable Long id){
         return deviceService.getDeviceById(id);
     }
 
@@ -63,7 +61,7 @@ public class DeviceController {
             @ApiResponse(responseCode="422", description="Some business rule was violated"),
             @ApiResponse(responseCode="500", description="Server problems detected"),
     })
-    public Device updateDevice(@PathVariable Long id, @RequestBody Device updatedDevice){
+    public ResponseEntity updateDevice(@PathVariable Long id, @RequestBody Device updatedDevice){
         return deviceService.updateDevice(id, updatedDevice);
     }
 

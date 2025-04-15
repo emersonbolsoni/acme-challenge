@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class DeviceService {
@@ -16,37 +15,57 @@ public class DeviceService {
     @Autowired
     private DeviceRepository deviceRepository;
 
-    public List<Device> getAllDevices(){
-        return deviceRepository.findAll();
+    public ResponseEntity getAllDevices(String brand, String state){
+        if(brand == null && state == null){
+            return ResponseEntity.ok(deviceRepository.findAll());
+        } else if(brand == null && state != null){
+            return ResponseEntity.ok(deviceRepository.findAllByState(state));
+        } else if(brand != null && state == null){
+            return ResponseEntity.ok(deviceRepository.findAllByBrand(brand));
+        } else {
+            return ResponseEntity.ok(deviceRepository.findAllByBrandAndState(brand, state));
+        }
     }
-
-    public Device getDeviceById(Long id){
-        return deviceRepository.findById(id).orElse(null);
+    public ResponseEntity getAllDevicesByBrand(String brand){
+        return ResponseEntity.ok(deviceRepository.findAllByBrand(brand));
+    }
+    public ResponseEntity getAllDevicesByState(String state){
+        return ResponseEntity.ok(deviceRepository.findAllByState(state));
+    }
+    public ResponseEntity getDeviceById(Long id){
+        return ResponseEntity.ok(deviceRepository.findById(id).orElse(null));
     }
 
     public ResponseEntity createDevice(Device device){
         device.setCreation_time(LocalDateTime.now());
         deviceRepository.save(device);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-//        return deviceRepository.save(device);
     }
 
-    public Device updateDevice(Long id, Device device){
-        //Creation time cannot be updated.
-        //Name and brand properties cannot be updated if the device is in use.
-
-        Device existingDevice = getDeviceById(id);
-        if(existingDevice != null){
-            existingDevice.setName(device.getName());
-            existingDevice.setBrand(device.getBrand());
-            existingDevice.setState(device.getState().name());
-            return deviceRepository.save(existingDevice);
+    public ResponseEntity updateDevice(Long id, Device device){
+        Device existingDevice = deviceRepository.findById(id).orElse(null);
+        if(existingDevice != null && existingDevice.getState().equalsIgnoreCase("in use")){
+            return ResponseEntity.status(422).body("The device is in use, is not possible to update");
+        } else if (existingDevice == null){
+            return ResponseEntity.notFound().build();
+        } else {
+            existingDevice.setName(device.getName() != null ? device.getName() : existingDevice.getName());
+            existingDevice.setBrand(device.getBrand() != null ? device.getBrand() : existingDevice.getBrand());
+            existingDevice.setState(device.getState() != existingDevice.getState() ? device.getState() : existingDevice.getState());
+            deviceRepository.save(existingDevice);
+            return ResponseEntity.status(201).build();
         }
-        return null;
     }
 
-    public void deleteDevice(Long id){
-        //In use devices cannot be deleted.
-        deviceRepository.deleteById(id);
+    public ResponseEntity deleteDevice(Long id){
+        Device existingDevice = deviceRepository.findById(id).orElse(null);
+        if(existingDevice != null && existingDevice.getState().equalsIgnoreCase("in use")){
+            return ResponseEntity.status(422).body("The device is in use, is not possible to delete");
+        } else if (existingDevice == null){
+            return ResponseEntity.notFound().build();
+        } else {
+            deviceRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
     }
 }
