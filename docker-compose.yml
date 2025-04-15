@@ -1,17 +1,16 @@
 version: '3.8'
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
+  postgresql:
+    image: postgres
+    container_name: postgresql
     environment:
-      MYSQL_DATABASE: challenge
-      MYSQL_ROOT_PASSWORD: password
+      POSTGRES_PASSWORD: "Postgres2025!"
     ports:
-      - '3306:3306'
+      - '5432:5432'
     volumes:
-      - mysql-data:/var/lib/mysql
+      - postgresql-data:/var/lib/postgresql
     networks:
-      - springboot-mysql
+      - springboot-postgresql
 
   app:
     build: .
@@ -19,17 +18,17 @@ services:
     ports:
       - '8080:8080'
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/challenge
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Postgres2025!
     depends_on:
-      - mysql
+      - postgresql
     networks:
-      - springboot-mysql
+      - springboot-postgresql
 
 volumes:
-  mysql-data:
+  postgresql-data:
 
 networks:
-  springboot-mysql:
+  springboot-postgresql:
     driver: bridge

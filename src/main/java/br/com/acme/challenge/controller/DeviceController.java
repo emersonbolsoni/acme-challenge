@@ -3,6 +3,7 @@ package br.com.acme.challenge.controller;
 import br.com.acme.challenge.entity.Device;
 import br.com.acme.challenge.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class DeviceController {
     }
 
     @PostMapping
-    public Device createDevice(@RequestBody Device device){
+    public ResponseEntity createDevice(@RequestBody Device device){
         return deviceService.createDevice(device);
     }
 

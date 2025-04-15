@@ -1,5 +1,6 @@
 package br.com.acme.challenge.entity;
 
+import br.com.acme.challenge.commons.State;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +18,7 @@ public class Device {
     private Long id;
     private String name;
     private String brand;
-    private String state;
+    private State state;
     private LocalDateTime creation_time;
 
     public Long getId() {
@@ -44,12 +45,12 @@ public class Device {
         this.brand = brand;
     }
 
-    public String getState() {
+    public State getState() {
         return state;
     }
 
     public void setState(String state) {
-        this.state = state;
+        this.state = State.valueOf(state);
     }
 
     public LocalDateTime getCreation_time() {
