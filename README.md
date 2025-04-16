@@ -5,22 +5,22 @@ All the CRUD operations are contemplated in this project.
 
 ## Dependencies
 
-This application requires PostgreSQL container to run. Before generate the application container, make sure you have PostgreSQL container up and running.
+This application requires PostgreSQL container database to run. Before generate the application container, make sure you have PostgreSQL container up and running.
 
-The JUnit tests *(requirement to compile)* depend on this database.
+The application and all the JUnit tests *(requirement to compile)* depends on this database.
 
 ## Documentation
-All the documentation can be visited on link `http://localhost:8080/swagger-ui/index.html` after the application running on container
+The API documentation can be visited on link `http://localhost:8080/swagger-ui/index.html` after the application is running
 
 ## Sequence to run the project
 
 ### **1 - Create a POSTGRESQL container**
 
-First, we will create a new volume using command: `docker volume create postgresql_volume`
+First, you must create a new volume using command: `docker volume create postgresql_volume`
 
 To make sure you have the new volume created, run this command: `docker volume ls` and you'll see the volume list you have created.
 
-Use this command to create and run the container 
+Use this command to create and run the database container 
 
 `docker run --name postgres_database -p 5432:5432 -e POSTGRES_PASSWORD=Postgres2025! --volume postgresql_volume:/var/lib/postgresql -d postgres`
 
@@ -28,7 +28,7 @@ If everything is OK, you should receive a code confirming your container is up a
 
 To make sure, run the command `docker ps` and see if your container information was returned.
 
-Now, we need to capture the IP Address of container to build our application. To do that, run the command `docker network inspect bridge` and you'll see the json structure for network and also the IPV4 information for postgresql image.
+Now, you need to capture the IP Address of database container to build your application. Run the command `docker network inspect bridge` and you'll see the json structure for network and also the IPV4 information for postgresql image.
 
 You should get some like this:
 
@@ -80,17 +80,17 @@ You should get some like this:
     }
 ]
 ```
-The information we needed is inside **Containers** node **IPv4Address**, in this case, the value is **172.17.0.2**
+The information you need is inside **Containers** node **IPv4Address**, in this case above, the value is **172.17.0.2**
 
 ### **2 - Compile and run the Acme container**
 
-Now, we'll prepare the Acme container to run. Inside the root directory (same as Dockerfile file directory) we must change the ip address to show how microservice can reach database. 
+Now, you must prepare the Acme container to run. Inside the root directory (same as Dockerfile file directory) you must change the ip address to tell how microservice can reach database. 
 
-To do that, replace the IP Address inside file `application.properties` in the line where contains `spring.datasource.url`
+Replace the IP Address inside file `application.properties` where contains key `spring.datasource.url`
 
-After that, you can run the command line `docker build -t acme-springboot .` and the image will be build.
+After that, you must run the command line `docker build -t acme-springboot .` and the image will be build.
 
-At least, we need to run that image. To do that, run the command `docker run --name acme -p 8080:8080 -d acme-springboot` and the confirmation should be displayed.
+At least, you need to run that image executing the command `docker run --name acme -p 8080:8080 -d acme-springboot` and the confirmation should be displayed.
 
 
 ## Improvements
