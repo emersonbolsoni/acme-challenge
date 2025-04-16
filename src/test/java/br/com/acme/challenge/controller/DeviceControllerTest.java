@@ -4,7 +4,10 @@ import br.com.acme.challenge.entity.Device;
 import br.com.acme.challenge.service.DeviceService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class DeviceControllerTest {
 
     private static final String URL = "/v1/devices";
@@ -27,6 +31,7 @@ class DeviceControllerTest {
     @Autowired private ObjectMapper objectMapper;
     @Autowired private DeviceService deviceService;
 
+    @Order(1)
     @Test
     void testCreateDevice_AvailableMonitor() throws Exception {
         Device device = new Device();
@@ -39,6 +44,7 @@ class DeviceControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
+    @Order(2)
     @Test
     void testCreateDevice_UnsuportedMediaType() throws Exception {
         Device device = new Device();
@@ -51,6 +57,7 @@ class DeviceControllerTest {
         ).andExpect(MockMvcResultMatchers.status().isUnsupportedMediaType());
     }
 
+    @Order(3)
     @Test
     void testListAllDevices() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(URL)
@@ -64,6 +71,7 @@ class DeviceControllerTest {
         assertNotEquals(0, deviceList.size());
     }
 
+    @Order(4)
     @Test
     void testListAllDevicesFilteringByExistingBrand() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(URL + "?brand=LG")
@@ -78,6 +86,7 @@ class DeviceControllerTest {
 
     }
 
+    @Order(5)
     @Test
     void testListAllDevicesFilteringByNotExistingBrand() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(URL + "?brand=EPSON")
@@ -92,6 +101,7 @@ class DeviceControllerTest {
 
     }
 
+    @Order(6)
     @Test
     void testListAllDevicesFilteringByMatchState() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(URL + "?state=available")
@@ -106,6 +116,7 @@ class DeviceControllerTest {
 
     }
 
+    @Order(7)
     @Test
     void testListAllDevicesFilteringByNotMatchState() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(URL + "?state=unavailable")
@@ -120,6 +131,7 @@ class DeviceControllerTest {
 
     }
 
+    @Order(8)
     @Test
     void testListAllDevicesFilteringByBrandAndMatchState() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(URL + "?brand=LG&state=available")
@@ -134,6 +146,7 @@ class DeviceControllerTest {
 
     }
 
+    @Order(9)
     @Test
     void testListAllDevicesBadRequestWrongUrl() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/v2/devices")
@@ -142,6 +155,7 @@ class DeviceControllerTest {
         ).andReturn();
     }
 
+    @Order(10)
     @Test
     void testListDeviceById() throws Exception {
         ArrayList<Device> query = (ArrayList<Device>) deviceService.getAllDevices("LG", "available").getBody();
@@ -163,6 +177,7 @@ class DeviceControllerTest {
         }
     }
 
+    @Order(11)
     @Test
     void testUpdateDevice_updateBrand() throws Exception {
         ArrayList<Device> query = (ArrayList<Device>) deviceService.getAllDevices("LG", "available").getBody();
@@ -186,6 +201,7 @@ class DeviceControllerTest {
         }
     }
 
+    @Order(12)
     @Test
     void testUpdateDevice_updateName() throws Exception {
         ArrayList<Device> query = (ArrayList<Device>) deviceService.getAllDevices("EPSON", "available").getBody();
@@ -209,6 +225,7 @@ class DeviceControllerTest {
         }
     }
 
+    @Order(13)
     @Test
     void testUpdateDevice_updateStateToInUse() throws Exception {
         ArrayList<Device> query = (ArrayList<Device>) deviceService.getAllDevices("EPSON", "available").getBody();
@@ -232,6 +249,7 @@ class DeviceControllerTest {
         }
     }
 
+    @Order(14)
     @Test
     void testUpdateDevice_updateNameBrandWithInUseState() throws Exception {
         ArrayList<Device> query = (ArrayList<Device>) deviceService.getAllDevices("EPSON", "in use").getBody();
@@ -252,6 +270,7 @@ class DeviceControllerTest {
         }
     }
 
+    @Order(15)
     @Test
     void testDeleteDevice_deleteWithInUseState() throws Exception {
         ArrayList<Device> query = (ArrayList<Device>) deviceService.getAllDevices("EPSON", "in use").getBody();
@@ -265,6 +284,7 @@ class DeviceControllerTest {
         }
     }
 
+    @Order(16)
     @Test
     void testDeleteDevice() throws Exception {
         ArrayList<Device> query = (ArrayList<Device>) deviceService.getAllDevices("EPSON", "in use").getBody();
@@ -281,6 +301,7 @@ class DeviceControllerTest {
         }
     }
 
+    @Order(17)
     @Test
     void testDeleteDevice_notFoundDevice() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/1000")
