@@ -51,7 +51,7 @@ public class DeviceService {
         } else {
             existingDevice.setName(device.getName() != null ? device.getName() : existingDevice.getName());
             existingDevice.setBrand(device.getBrand() != null ? device.getBrand() : existingDevice.getBrand());
-            existingDevice.setState(device.getState() != existingDevice.getState() ? device.getState() : existingDevice.getState());
+            existingDevice.setState((device.getState() != null && device.getState() != existingDevice.getState()) ? device.getState() : existingDevice.getState());
             deviceRepository.save(existingDevice);
             return ResponseEntity.ok().build();
         }
